@@ -965,5 +965,107 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 })();
 </script>
 
+<script>
+/* Google Analytics 4. Paste the Measurement ID from GA4 (looks like G-XXXXXXXXXX) between the quotes.
+   While it is empty, nothing is loaded and nothing is sent.
+   Visit the site once with ?notrack on the end of the address to stop counting your own visits in that
+   browser, and with ?track to turn counting back on. */
+(function () {
+  'use strict';
+  var GA_ID = '';
+  var live = false;
+
+  function store(k, v) { try { if (v === null) localStorage.removeItem(k); else if (v !== undefined) localStorage.setItem(k, v); return localStorage.getItem(k); } catch (e) { return null; } }
+  var q = location.search;
+  if (/[?&]notrack\b/.test(q)) store('kk-notrack', '1');
+  if (/[?&]track\b/.test(q)) store('kk-notrack', null);
+
+  var h = location.hostname;
+  var local = !h || h === 'localhost' || h === '127.0.0.1';
+  if (!/^G-[A-Z0-9]{6,}$/.test(GA_ID) || local || store('kk-notrack') === '1') return;
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', GA_ID);
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
+  document.head.appendChild(s);
+  live = true;
+
+  /* tell visitors, in the footer, that visits are counted */
+  var foot = document.querySelector('footer .wrap');
+  if (foot) { var note = document.createElement('span'); note.textContent = 'Visits are counted with Google Analytics.'; foot.insertBefore(note, foot.lastElementChild); }
+
+  function track(name, params) { if (live) gtag('event', name, params || {}); }
+  function text(sel) { var el = document.querySelector(sel); return el ? el.textContent.trim() : ''; }
+  function where(el) {
+    if (el.id === 'fab') return 'floating_button';
+    if (el.closest('#modal')) return 'project_modal';
+    if (el.closest('.reach')) return 'contact_card';
+    if (el.closest('.cta-row')) return 'hero';
+    if (el.closest('.t-lc')) return 'about_tile';
+    if (el.closest('#nav')) return 'header';
+    return 'page';
+  }
+
+  /* one listener covers every button and link, so no other code needs to change */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest && e.target.closest('a, button');
+    if (!el) return;
+    var c = el.classList;
+    if (c.contains('pcard')) {
+      track('project_open', { label: (el.querySelector('.ptitle') || {}).textContent, placement: 'project_card' });
+    } else if (c.contains('use-pill')) {
+      track('project_open', { label: el.textContent.trim(), placement: 'skills_explorer' });
+    } else if (el.id === 'mNext' || el.id === 'mPrev') {
+      track('project_open', { label: text('#mTitle'), placement: 'project_modal_nav' });
+    } else if (el.id === 'mRepo') {
+      track('project_repo_click', { label: text('#mTitle'), placement: 'project_modal' });
+    } else if (c.contains('pill')) {
+      track('project_filter', { label: el.getAttribute('data-f') });
+    } else if (c.contains('node')) {
+      track('timeline_select', { label: (el.querySelector('b') || {}).textContent });
+    } else if (c.contains('skill-btn')) {
+      track('skill_select', { label: el.textContent.trim() });
+    } else if (c.contains('dot-btn')) {
+      track('recognition_select', { label: el.getAttribute('aria-label') });
+    } else if (c.contains('copy-btn')) {
+      track('contact_copy', { label: el.getAttribute('data-target') === 'phoneText' ? 'whatsapp_number' : 'email' });
+    } else if (el.tagName === 'A') {
+      var href = el.getAttribute('href') || '', p = where(el);
+      if (href.charAt(0) === '#') {
+        if (p === 'header') track('nav_click', { label: href.slice(1) });
+        else if (p === 'hero') track('cta_click', { label: el.textContent.trim() });
+      } else if (/\.pdf($|\?)/i.test(href)) {
+        track(el.hasAttribute('download') ? 'cv_download' : 'cv_view', { placement: p });
+      } else if (/wa\.me|whatsapp/i.test(href)) {
+        track('contact_click', { label: 'whatsapp', placement: p });
+      } else if (/^mailto:|mail\.google\.com/i.test(href)) {
+        track('contact_click', { label: 'email', placement: p });
+      } else if (/linkedin\.com/i.test(href)) {
+        track('contact_click', { label: 'linkedin', placement: p });
+      } else if (/leetcode\.com/i.test(href)) {
+        track('contact_click', { label: 'leetcode', placement: p });
+      } else if (/github\.com\/khyatikhaitan\/?$/i.test(href)) {
+        track('contact_click', { label: 'github', placement: p });
+      }
+    }
+  });
+
+  /* which sections people actually reach, once per visit */
+  if ('IntersectionObserver' in window) {
+    var seen = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && !seen[en.target.id]) { seen[en.target.id] = 1; track('section_view', { label: en.target.id }); }
+      });
+    }, { threshold: 0.35 });
+    ['about', 'work', 'projects', 'skills', 'contact'].forEach(function (id) { var s2 = document.getElementById(id); if (s2) io.observe(s2); });
+  }
+})();
+</script>
 </body>
 </html>

@@ -453,10 +453,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <button class="pcard" type="button" data-id="f" data-kind="personal" aria-haspopup="dialog">
           <span class="thumb"><svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect x="-400" y="-100" width="1120" height="400" class="f-tint3"/><rect x="34" y="30" width="124" height="140" rx="8" class="f-surf s-line"/><rect x="46" y="44" width="78" height="9" rx="4" class="f-ink"/><rect x="46" y="60" width="98" height="6" rx="3" class="f-tint2"/><rect x="46" y="72" width="90" height="6" rx="3" class="f-tint2"/><rect x="46" y="84" width="98" height="6" rx="3" class="f-tint2"/><path d="M46 150L66 134L84 142L106 116L124 124L146 102" class="s-deep"/><rect x="176" y="40" width="112" height="34" rx="12" class="f-acc"/><rect x="188" y="51" width="70" height="6" rx="3" class="f-ink" opacity=".55"/><rect x="188" y="62" width="48" height="6" rx="3" class="f-ink" opacity=".55"/><rect x="176" y="90" width="112" height="56" rx="12" class="f-surf s-line"/><rect x="188" y="102" width="86" height="6" rx="3" class="f-tint2"/><rect x="188" y="114" width="70" height="6" rx="3" class="f-tint2"/><rect x="188" y="128" width="40" height="11" rx="5" class="f-ink"/><text x="194" y="136.5" class="t-bg" style="font-size:7px">SOURCE</text><path d="M208 139C190 160 170 150 158 118" class="s-dash"/></svg></span>
           <span class="pbody">
-            <span class="pmeta">Personal · 2025</span>
+            <span class="pmeta">Personal · 2025 – 2026</span>
             <span class="ptitle">Finance News Research Tool</span>
-            <span class="pdesc">Ask questions about finance articles and get answers grounded in the source.</span>
-            <span class="chips"><span class="chip">LangChain</span><span class="chip">FAISS</span><span class="chip">Groq</span></span>
+            <span class="pdesc">Chat with finance articles and get cited answers, using hybrid keyword and semantic search.</span>
+            <span class="chips"><span class="chip">Hybrid search</span><span class="chip">LangChain</span><span class="chip">Groq</span></span>
             <span class="pmore">View details</span>
           </span>
         </button>
@@ -507,10 +507,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <button class="skill-btn" type="button" aria-pressed="false" data-use="d">LangGraph</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="d">Google Gemini</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="d">Prompt engineering</button>
-            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">RAG</button>
+<button class="skill-btn" type="button" aria-pressed="false" data-use="f">RAG</button>
+            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">Hybrid search</button>
+            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">Semantic search</button>
+            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">BM25</button>
+            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">Reciprocal Rank Fusion</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="f">LangChain</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="f">FAISS</button>
-            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">HuggingFace</button>
+            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">Hugging Face</button>
+            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">Groq</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="a">Rasa</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="d">Entity extraction</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="d">ASR error handling</button>
@@ -525,6 +530,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <button class="skill-btn" type="button" aria-pressed="false" data-use="d">Redis</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="d">MongoDB</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="d">POS integrations</button>
+            <button class="skill-btn" type="button" aria-pressed="false" data-use="f">Streamlit</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="">Django</button>
             <button class="skill-btn" type="button" aria-pressed="false" data-use="">Django REST Framework</button>
           </div>
@@ -813,12 +819,14 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         'Improved the real-time ordering flow for intent recognition, fallback handling and conversational reliability.',
         'Analyzed 500+ real customer interactions with product, QA and support and turned them into production fixes.'],
       chips: ['FastAPI', 'Socket.IO', 'Gemini', 'LangGraph', 'Redis', 'MongoDB', 'Jinja2'] },
-    f: { meta: 'Personal project · 2025', title: 'Finance News Research Tool',
-      text: 'A question-answering tool for finance articles that points back to its sources.',
-      points: ['Built a RAG pipeline with LangChain and OpenAI\'s open-weight gpt-oss-20b model, served through Groq.',
-        'Used FAISS and HuggingFace embeddings for semantic search, so answers stay grounded in the article text.',
-        'Added a Streamlit front end for article input, queries and live results.'],
-      chips: ['Python', 'LangChain', 'FAISS', 'HuggingFace', 'Groq', 'Streamlit'],
+    f: { meta: 'Personal project · 2025 – 2026', title: 'Finance News Research Tool',
+      text: 'A chat tool for finance articles. Paste up to three article links, ask questions, and get answers that cite the exact passages they came from.',
+      points: ['Added hybrid search: BM25 keyword search finds exact tickers, acronyms and figures, while FAISS with Hugging Face MiniLM embeddings finds matching meaning. Reciprocal Rank Fusion merges the two ranked lists.',
+        'Limited the final results to two chunks per article so answers can draw on several sources, and added a switch to compare Hybrid, Meaning only and Keywords only.',
+        'Rewrites follow-up questions into standalone search queries, then streams answers from OpenAI\'s open-weight gpt-oss-20b on Groq, through LangChain.',
+        'Answers carry inline citations [1], [2] linked to the excerpts used. The model is told to answer only from those excerpts and to say when it does not know.',
+        'Streamlit chat interface with article input, search mode and a sources panel showing which excerpts were cited.'],
+      chips: ['Python', 'LangChain', 'FAISS', 'BM25', 'Hugging Face', 'Groq', 'Streamlit'],
       repo: 'https://github.com/khyatikhaitan/Finance-News-Research-Tool' },
     b: { meta: 'Personal project · 2025', title: 'Bengali-to-Hindi Text Refiner',
       text: 'Turns a photo of handwritten Bengali into fluent, readable Hindi.',

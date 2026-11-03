@@ -980,9 +980,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   if (/[?&]notrack\b/.test(q)) store('kk-notrack', '1');
   if (/[?&]track\b/.test(q)) store('kk-notrack', null);
 
-  var h = location.hostname;
-  var local = !h || h === 'localhost' || h === '127.0.0.1';
-  if (!/^G-[A-Z0-9]{6,}$/.test(GA_ID) || local || store('kk-notrack') === '1') return;
+  /* count the live site only: previews and local copies are not visits (add a custom domain here if you get one) */
+  var LIVE_HOSTS = ['khyatikhaitan.github.io'];
+  if (!/^G-[A-Z0-9]{6,}$/.test(GA_ID) || LIVE_HOSTS.indexOf(location.hostname) < 0 || store('kk-notrack') === '1') return;
 
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
@@ -1011,19 +1011,27 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     return 'page';
   }
 
-  /* one listener covers every button and link, so no other code needs to change */
+  /* Events and their parameters:
+       contact_click        method = whatsapp | email                      (intent to reach out, the main key event)
+       contact_copy         method = whatsapp | email
+       cv_view, cv_download                                               (CV interest)
+       profile_click        method = linkedin | github | leetcode
+       project_open         label = project name
+       project_repo_click   label = project name
+       project_filter, timeline_select, skill_select, recognition_select, nav_click, cta_click, section_view   label = the thing
+     link_location says where on the page it happened. One listener covers every button and link. */
   document.addEventListener('click', function (e) {
     var el = e.target.closest && e.target.closest('a, button');
     if (!el) return;
     var c = el.classList;
     if (c.contains('pcard')) {
-      track('project_open', { label: (el.querySelector('.ptitle') || {}).textContent, placement: 'project_card' });
+      track('project_open', { label: (el.querySelector('.ptitle') || {}).textContent, link_location: 'project_card' });
     } else if (c.contains('use-pill')) {
-      track('project_open', { label: el.textContent.trim(), placement: 'skills_explorer' });
+      track('project_open', { label: el.textContent.trim(), link_location: 'skills_explorer' });
     } else if (el.id === 'mNext' || el.id === 'mPrev') {
-      track('project_open', { label: text('#mTitle'), placement: 'project_modal_nav' });
+      track('project_open', { label: text('#mTitle'), link_location: 'project_modal_nav' });
     } else if (el.id === 'mRepo') {
-      track('project_repo_click', { label: text('#mTitle'), placement: 'project_modal' });
+      track('project_repo_click', { label: text('#mTitle'), link_location: 'project_modal' });
     } else if (c.contains('pill')) {
       track('project_filter', { label: el.getAttribute('data-f') });
     } else if (c.contains('node')) {
@@ -1033,24 +1041,24 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     } else if (c.contains('dot-btn')) {
       track('recognition_select', { label: el.getAttribute('aria-label') });
     } else if (c.contains('copy-btn')) {
-      track('contact_copy', { label: el.getAttribute('data-target') === 'phoneText' ? 'whatsapp_number' : 'email' });
+      track('contact_copy', { method: el.getAttribute('data-target') === 'phoneText' ? 'whatsapp' : 'email', link_location: 'contact_card' });
     } else if (el.tagName === 'A') {
-      var href = el.getAttribute('href') || '', p = where(el);
+      var href = el.getAttribute('href') || '', loc = where(el);
       if (href.charAt(0) === '#') {
-        if (p === 'header') track('nav_click', { label: href.slice(1) });
-        else if (p === 'hero') track('cta_click', { label: el.textContent.trim() });
+        if (loc === 'header') track('nav_click', { label: href.slice(1) });
+        else if (loc === 'hero') track('cta_click', { label: el.textContent.trim() });
       } else if (/\.pdf($|\?)/i.test(href)) {
-        track(el.hasAttribute('download') ? 'cv_download' : 'cv_view', { placement: p });
+        track(el.hasAttribute('download') ? 'cv_download' : 'cv_view', { link_location: loc });
       } else if (/wa\.me|whatsapp/i.test(href)) {
-        track('contact_click', { label: 'whatsapp', placement: p });
+        track('contact_click', { method: 'whatsapp', link_location: loc });
       } else if (/^mailto:|mail\.google\.com/i.test(href)) {
-        track('contact_click', { label: 'email', placement: p });
+        track('contact_click', { method: 'email', link_location: loc });
       } else if (/linkedin\.com/i.test(href)) {
-        track('contact_click', { label: 'linkedin', placement: p });
+        track('profile_click', { method: 'linkedin', link_location: loc });
       } else if (/leetcode\.com/i.test(href)) {
-        track('contact_click', { label: 'leetcode', placement: p });
+        track('profile_click', { method: 'leetcode', link_location: loc });
       } else if (/github\.com\/khyatikhaitan\/?$/i.test(href)) {
-        track('contact_click', { label: 'github', placement: p });
+        track('profile_click', { method: 'github', link_location: loc });
       }
     }
   });
